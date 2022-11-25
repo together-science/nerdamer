@@ -3032,7 +3032,7 @@ if((typeof module) !== 'undefined') {
                     if(symbol.fname === 'sqrt') {
                         var factors2 = new Factors(),
                                 arg = __.Factor.common(symbol.args[0].clone(), factors2);
-                        arg = __.Factor.coeffFactor(arg, factors2);
+                        arg = __.Factor.coeffFactor(arg, null);
                         symbol = _.multiply(_.symfunction('sqrt', [arg]), _.parse(symbol.multiplier));
                         factors2.each(function (x) {
                             symbol = _.multiply(symbol, _.parse(core.Utils.format('sqrt({0})', x)));

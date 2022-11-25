@@ -1325,7 +1325,7 @@ if((typeof module) !== 'undefined') {
         //if we're dealing with a single variable then we first check if it's a 
         //polynomial (including rationals).If it is then we use the Jenkins-Traubb algorithm.     
         //Don't waste time
-        if(eq.group === S || eq.group === CB && eq.contains(solve_for)) {
+        if((eq.group === S || eq.group === CB) && eq.contains(solve_for)) {
             return [new Symbol(0)];
         }
         //force to polynomial. We go through each and then we look at what it would 

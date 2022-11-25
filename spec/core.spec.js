@@ -2814,23 +2814,23 @@ describe('hyperbolic trigonometric functions', function () {
             expect(round(value, 14)).toEqual(round(testCases[i].expectedValue),14);
         }
     });
-    xit('should throw for wrong trigonometric arguments', function () {
-        // given
-        var testCases = [
-            'csch(0)',
-            'coth(0)'
-        ];
+    // xit('should throw for wrong trigonometric arguments', function () {
+    //     // given
+    //     var testCases = [
+    //         'csch(0)',
+    //         'coth(0)'
+    //     ];
 
-        for (var i = 0; i < testCases.length; ++i) {
-            var threwError = false;
-            try {
-                nerdamer(testCases[i]).evaluate();
-            } catch (e) {
-                threwError = true;
-            }
-            expect(threwError).toBe(true);
-        }
-    });
+    //     for (var i = 0; i < testCases.length; ++i) {
+    //         var threwError = false;
+    //         try {
+    //             nerdamer(testCases[i]).evaluate();
+    //         } catch (e) {
+    //             threwError = true;
+    //         }
+    //         expect(threwError).toBe(true);
+    //     }
+    // });
     it('should calculate correctly with variables', function () {
         // given
         var testCases = [
