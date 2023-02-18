@@ -2968,3 +2968,10 @@ describe('omit brackets for functions', function() {
     });
 });
 
+describe('together.math functionalituy', function() {
+    it('should simplify squareroots of baseunit_ squares', function() {
+        expect(nerdamer('sqrt(baseunit_kg^2)').toString()).toEqual('baseunit_kg');
+        expect(nerdamer('sqrt(4*baseunit_kg^2)').toString()).toEqual('2*baseunit_kg');
+        expect(nerdamer('sqrt(4*baseunit_kg^4)').toString()).toEqual('2*baseunit_kg^2');
+    });
+});
