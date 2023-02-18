@@ -7254,6 +7254,11 @@ var nerdamer = (function (imports) {
             else if(isNumericSymbol(symbol) || even(symbol.power)) {
                 return symbol;
             }
+            // together.math baseunits are presumed positive
+            else if(isVariableSymbol(symbol) && (typeof symbol.value==="string") &&
+                symbol.value.startsWith("baseunit_")) {
+                return symbol;
+            }
 
             if(symbol.isComposite()) {
                 var ms = [];
