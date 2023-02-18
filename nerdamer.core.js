@@ -9811,7 +9811,7 @@ var nerdamer = (function (imports) {
                                     n = result.power.toDecimal(),
                                     evennp = even(n);
                             if(evenr && evenp && !evennp) {
-                                if(n === 1){
+                                if(n === "1" || n === 1){
                                     // check for together.math baseunits
                                     // don't have to wrap them in abs()
                                     if (typeof result.value !== "string" ||
