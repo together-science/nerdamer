@@ -264,8 +264,11 @@ describe('Algebra', function () {
         // Bug: 
         // expect(nerdamer('simplify((-3/2)x+(1/3)y+2+z)').toString()).toEqual('(1/6)*(-9*x+12+2*y+6*z)');
         expect(nerdamer('simplify(0.5sqrt(4a+4y))').toString()).toEqual('sqrt(a+y)');
+        expect(nerdamer('simplify(log(3*(a/b)^2))').toString()).toEqual('-2*log(b)+2*log(a)+30312094/27591257');
+        expect(nerdamer('simplify(log(e*(a/b)^2))').toString()).toEqual('-(-1-2*log(a)+2*log(b))');
+        expect(nerdamer('simplify(log(a/b))').toString()).toEqual('-log(b)+log(a)');
     });
-    it('should also simplify', function() {
+    it('should also simplify squareroots', function() {
         //expect(nerdamer('6/sqrt(3)')).toEqual();
     });
     it('should calculate nth roots correctly', function() {

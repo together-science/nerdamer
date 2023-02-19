@@ -2918,11 +2918,14 @@ if((typeof module) !== 'undefined') {
                             //if we can divide then do so
                             if(can_divide) {
 
+                                let s = symbol.clone();
                                 var div = __.div(symbol, d.clone()),
                                         is_factor = div[1].equals(0);
                                 
                                 // Break infinite loop for factoring e^t*x-1
                                 if((symbol.equals(div[0]) && div[1].equals(0))) {
+                                    // restore symbol, was mangled in __.div
+                                    symbol = s;
                                     break;
                                 }
                                 
@@ -4172,6 +4175,73 @@ if((typeof module) !== 'undefined') {
 
                 return symbol;
             },
+            logArgSimp: function(fn, term) {
+                // console.log("----- log term: "+ term.text());
+                if (term.value === "1" || term.value === 1) {
+                    return term;
+                }
+                // work on all factors of the arg term
+                // inintialize the sum
+                let r = new Symbol(0);
+                // first up: the numerator's multiplier
+                let m = term.multiplier.clone();
+                // console.log("----  multiplier: "+m);
+                term.toUnitMultiplier();
+                // console.log("term with unit multiplier: "+term);
+
+                if (m) {
+                    let a = core.Utils.format('({0}({1}))', fn, m);
+                    // console.log("m transformed: "+a);
+                    r = _.add(r, _.parse(a));
+                    // console.log("m r: "+r.text());
+                }
+                // now each factor, with its power
+                // console.log("---- term factors");
+                term.each(function (x) {
+                    let original = x;
+                    x = x.clone();
+                    let p = x.power.clone();
+                    let m = x.multiplier.clone();
+                    __.Simplify.strip(x);
+                    // console.log("factor: "+m+" * "+x+"^"+p+" = "+original);
+                    let a = core.Utils.format('(({1})*{0}({2}))', fn, p, x);
+                    // console.log("factor transformed: "+a);
+                    r = _.add(r, _.parse(a));
+                    // console.log("running sum: "+r.text());
+                });
+                //put back the multiplier
+                // console.log("result: "+r.text());
+                return r;
+            },
+            logSimp: function (symbol) {
+                if(symbol.group === FN && (symbol.fname === "log" || symbol.fname === "log10") &&
+                    symbol.args[0].group === CB) {
+                    // console.log();
+                    // console.log("Initial: "+symbol.text());
+                    symbol = symbol.clone();
+                    //remove power and multiplier
+                    var sym_array = __.Simplify.strip(symbol);
+                    symbol = sym_array.pop();
+
+                    // work on the argument
+                    let arg = symbol.args[0].clone();
+                    let n = arg.getNum().clone();
+                    // console.log("n: "+n.text());
+                    let d = arg.getDenom().clone();
+                    // console.log("d: "+d.text());
+                    let fn = symbol.fname;
+
+                    let retval = __.Simplify.logArgSimp(fn, n);
+                    let rd = __.Simplify.logArgSimp(fn, d);
+                    retval = _.subtract(retval, rd);
+
+                    retval = __.Simplify.unstrip(sym_array, retval).distributeMultiplier();
+                    symbol = retval;
+                    // console.log("result: "+symbol.text());
+                }
+
+                return symbol;
+            },
             fracSimp: function (symbol) {
                 //try a quick simplify of imaginary numbers
                 var den = symbol.getDenom();
@@ -4367,6 +4437,7 @@ if((typeof module) !== 'undefined') {
                     var ret = __.Simplify.unstrip(sym_array, symbol);
                     return ret;
                 }
+                // console.log("array: "+sym_array);
 
                 //var patterns;
 
@@ -4375,10 +4446,14 @@ if((typeof module) !== 'undefined') {
                 //[simplified, patterns] = __.Simplify.patternSub(symbol);
 
                 // Simplify sqrt within the symbol
-//                simplified = __.Simplify.sqrtSimp(simplified, sym_array);
+                // todo: why does this break calculus tests?
+                // simplified = __.Simplify.sqrtSimp(simplified, sym_array);
 
                 // Try trig simplificatons e.g. cos(x)^2+sin(x)^2
                 simplified = __.Simplify.trigSimp(simplified);
+
+                // Try log simplificatons e.g. log(a/b)=> log(a)-log(b)
+                simplified = __.Simplify.logSimp(simplified);
 
                 // Simplify common denominators
                 simplified = __.Simplify.ratSimp(simplified);
@@ -4387,12 +4462,15 @@ if((typeof module) !== 'undefined') {
                 // your problems right away. factor -> evaluate. Remember
                 // that there's no need to expand since factor already does that
 
+                // console.log("before factor: "+simplified.text());
                 simplified = __.Factor.factor(simplified);
+                // console.log("after factor: "+simplified.text());
 
-                //If the simplfied is a sum then we can make a few more simplifications
+                //If the simplified is a sum then we can make a few more simplifications
                 //e.g. simplify(1/(x-1)+1/(1-x)) as per issue #431
+                // console.log("before sums: "+simplified.text());
                 if(simplified.group === core.groups.CP && simplified.isLinear()) {
-                    var m = simplified.multiplier.clone();
+                    let m = simplified.multiplier.clone();
                     simplified.toUnitMultiplier(); //strip the multiplier
                     var r = new Symbol(0);
                     //return the sum of simplifications
@@ -4402,9 +4480,10 @@ if((typeof module) !== 'undefined') {
                     });
                     simplified = r;
                     //put back the multiplier
-                    r.multiplier = r.multiplier.multiply(m);
+                    simplified.multiplier = m;
                 }
 
+                // console.log("after sums: "+simplified.text());
                 //place back multiplier and return
                 var retval = __.Simplify.unstrip(sym_array, simplified);
 
@@ -4415,6 +4494,7 @@ if((typeof module) !== 'undefined') {
                  }
                  */
 
+                // console.log("final result: "+retval.text());
                 return retval;
             }
         },
