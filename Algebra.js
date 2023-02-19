@@ -2298,6 +2298,17 @@ if((typeof module) !== 'undefined') {
                         }
                     });
 
+                    // // sanitization: eliminate "-(-x)"
+                    // for (let xk in t.symbols) {
+                    //     let x = t.symbols[xk];
+                    //     if ((x.group === CB || x.group === CP || x.group === PL) &&
+                    //         x.multiplier.equals(-1)) {
+                    //         // console.log("replacing "+x)
+                    //         t[xk] = _.parse(x);
+                    //         // console.log("with "+t[xk])
+                    //     }
+                    // }
+
                     //put back the multiplier and power
                     retval = _.pow(_.multiply(m, t), p);
                 }
@@ -2343,6 +2354,17 @@ if((typeof module) !== 'undefined') {
                             }
                         }
                     }
+                    // // sanitization: eliminate "-(-x)"
+                    // for (let xk in symbol.symbols) {
+                    //     let x = symbol.symbols[xk];
+                    //     if ((x.group === CB || x.group === CP || x.group === PL) &&
+                    //         x.multiplier.equals(-1)) {
+                    //         console.log("replacing "+x)
+                    //         symbol[xk] = _.parse(x);
+                    //         console.log("with "+symbol[xk])
+                    //     }
+                    // }
+                    
                 }
                 return symbol;
             },
@@ -2468,7 +2490,7 @@ if((typeof module) !== 'undefined') {
                     var p = symbol.power.clone();
 
                     if(isInt(p) && !(p.lessThan(0) && symbol.group === FN)) {
-                        var sign = p.sign();
+                            var sign = p.sign();
                         symbol.toLinear();
                         factors = factors || new Factors();
                         var map = {};
@@ -2902,6 +2924,11 @@ if((typeof module) !== 'undefined') {
                             if(d.equals(0))
                                 break;
 
+                            // sometimes nerdamer get too happy about factoring out 1 and -1
+                            if(d.equals(1) || d.equals(-1)) {
+                                break;
+                            }
+
                             //trial division to see if factors have whole numbers. 
                             //This can be optimized by stopping as soon as can_divide is false
                             //this will also need utilize big number at some point
@@ -3041,8 +3068,10 @@ if((typeof module) !== 'undefined') {
                             symbol = _.multiply(symbol, _.parse(core.Utils.format('sqrt({0})', x)));
                         });
                     }
-                    else
+                    else {
                         factors.add(symbol);
+                        symbol = new Symbol(1);
+                    }
                 }
                 else {
 
@@ -3081,7 +3110,7 @@ if((typeof module) !== 'undefined') {
                         var div = _.divide(sorted[x], r);
                         var new_factor = _.expand(div);
 
-                        if(new_factor.equals(1))
+                        if(new_factor.equals(1) || new_factor.equals(-1))
                             break; //why divide by one. Just move 
                         var divided = __.div(symbol.clone(), new_factor);
 
@@ -3154,7 +3183,18 @@ if((typeof module) !== 'undefined') {
                                 return r;
                             }
 
-                            return __.Factor.mfactor(r, factors);
+                            symbol =  __.Factor.mfactor(r, factors);
+                            // // sanitization: eliminate "-(-x)"
+                            // for (let xk in symbol.symbols) {
+                            //     let x = symbol.symbols[xk];
+                            //     if ((x.group === CB || x.group === CP || x.group === PL) &&
+                            //         x.multiplier.equals(-1)) {
+                            //         console.log("replacing "+x)
+                            //         symbol[xk] = _.parse(x);
+                            //         console.log("with "+symbol[xk])
+                            //     }
+                            // }
+                            return symbol;
                         }
                     }
 
@@ -3166,6 +3206,16 @@ if((typeof module) !== 'undefined') {
                 //factors by fishing for zeroes
                 symbol = __.Factor.zeroes(symbol, factors);
 
+                // // sanitization: eliminate "-(-x)"
+                // for (let xk in symbol.symbols) {
+                //     let x = symbol.symbols[xk];
+                //     if ((x.group === CB || x.group === CP || x.group === PL) &&
+                //         x.multiplier.equals(-1)) {
+                //         console.log("replacing "+x)
+                //         symbol[xk] = _.parse(x);
+                //         console.log("with "+symbol[xk])
+                //     }
+                // }
                 return symbol;
             }
         },
@@ -4481,7 +4531,28 @@ if((typeof module) !== 'undefined') {
                     simplified = r;
                     //put back the multiplier
                     simplified.multiplier = m;
-                }
+                    if (simplified.multiplier.equals(-1)) {
+                        simplified.distributeMultiplier();
+                    }
+                } 
+                // else if(simplified.group === core.groups.CB) {
+                //     let m = simplified.multiplier.clone();
+                //     simplified.toUnitMultiplier(); //strip the multiplier
+                //     var r = new Symbol(1);
+                //     //return the sum of simplifications
+                //     simplified.each(function (x) {
+                //         if (x.multiplier.equals(-1)) {
+                //             console.log("replacing "+x.value)
+                //             x = _.parse(x.value);
+                //             console.log("with "+x.value)
+                //         }
+                //         r = _.multiply(r, x);
+                //         r = r.distributeMultiplier();
+                //     });
+                //     simplified = r;
+                //     //put back the multiplier
+                //     simplified.multiplier = m;
+                // }
 
                 // console.log("after sums: "+simplified.text());
                 //place back multiplier and return
