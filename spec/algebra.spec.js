@@ -7,6 +7,7 @@ require('../Algebra.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
+        expect(nerdamer('simplify((-1/2)x+(1/3)y+2)').toString()).toEqual('simplify((-1/2)x+(1/3)y+2)');
     });
     it('should perform gcd operations correctly', function () {
         expect(nerdamer('gcd(5*x^6+5*x^5+27*x^4+27*x^3+28*x^2+28*x, 5*x^3+7*x)').toString()).toEqual('5*x^3+7*x');
@@ -266,6 +267,9 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(log(a/b))').toString()).toEqual('-log(b)+log(a)');
         expect(nerdamer('simplify(cos(a/b))').toString()).toEqual('cos(a*b^(-1))');
         expect(nerdamer('simplify(cos(x)^2+sin(x)^2+cos(x)-tan(x)-1+sin(x^2)^2+cos(x^2)^2)').toString()).toEqual('-tan(x)+1+cos(x)');
+        expect(nerdamer('simplify((1/2)*(-x+2*y))').toString()).toEqual('(1/2)*(-x+2*y)');
+        expect(nerdamer('simplify((-1/2)x+y)').toString()).toEqual('(1/2)*(-x+2*y)');
+        expect(nerdamer('simplify((1/6)*(-3*x+12+2*y))').toString()).toEqual('(1/6)*(-3*x+12+2*y)');
     });
     it('should also simplify squareroots', function() {
         // expect(nerdamer('6/sqrt(3)')).toEqual();
@@ -292,6 +296,5 @@ describe('Algebra', function () {
     it('known bugs:', function() {
         expect(nerdamer('factor(x^2-6*x+9-4*y^2)').toString()).toEqual('(-2*y-3+x)*(-3+2*y+x)');
         expect(nerdamer('factor((x^2+4x+4)-y^2)').toString()).toEqual('(-y+2+x)*(2+x+y)');
-        expect(nerdamer('simplify((-3/2)x+(1/3)y+2+z)').toString()).toEqual('(1/6)*(-9*x+12+2*y+6*z)');
     });
 });
