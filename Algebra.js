@@ -2281,10 +2281,10 @@ if((typeof module) !== 'undefined') {
                         // updated, it's easier to just parse the symbol and have the parser 
                         // do the update for us.
                         var factored = _.parse(__.Factor._factor(x));
+                        m = _.multiply(m, Symbol.create(factored.multiplier));
+                        factored.toUnitMultiplier();
 
                         if(factored.group === CB) {
-                            // Include the multiplier
-                            m = _.multiply(m, Symbol.create(factored.multiplier));
                             factored.each(function (y) {
                                 var _factored = _.parse(__.Factor._factor(y));
                                 t = _.multiply(t, _factored);
@@ -2298,21 +2298,10 @@ if((typeof module) !== 'undefined') {
                         }
                     });
 
-                    // // sanitization: eliminate "-(-x)"
-                    // for (let xk in t.symbols) {
-                    //     let x = t.symbols[xk];
-                    //     if ((x.group === CB || x.group === CP || x.group === PL) &&
-                    //         x.multiplier.equals(-1)) {
-                    //         // console.log("replacing "+x)
-                    //         t[xk] = _.parse(x);
-                    //         // console.log("with "+t[xk])
-                    //     }
-                    // }
-
                     //put back the multiplier and power
                     retval = _.pow(_.multiply(m, t), p);
                 }
-
+                // retval.pushMinus();
                 return retval;
             },
             quadFactor: function (symbol, factors) {
@@ -4535,26 +4524,7 @@ if((typeof module) !== 'undefined') {
                         simplified.distributeMultiplier();
                     }
                 } 
-                // else if(simplified.group === core.groups.CB) {
-                //     let m = simplified.multiplier.clone();
-                //     simplified.toUnitMultiplier(); //strip the multiplier
-                //     var r = new Symbol(1);
-                //     //return the sum of simplifications
-                //     simplified.each(function (x) {
-                //         if (x.multiplier.equals(-1)) {
-                //             console.log("replacing "+x.value)
-                //             x = _.parse(x.value);
-                //             console.log("with "+x.value)
-                //         }
-                //         r = _.multiply(r, x);
-                //         r = r.distributeMultiplier();
-                //     });
-                //     simplified = r;
-                //     //put back the multiplier
-                //     simplified.multiplier = m;
-                // }
 
-                // console.log("after sums: "+simplified.text());
                 //place back multiplier and return
                 var retval = __.Simplify.unstrip(sym_array, simplified);
 
@@ -4564,6 +4534,8 @@ if((typeof module) !== 'undefined') {
                  retval = retval.sub(patterns[x], x);
                  }
                  */
+
+                retval.pushMinus();
 
                 // console.log("final result: "+retval.text());
                 return retval;

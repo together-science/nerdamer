@@ -3317,6 +3317,27 @@ var nerdamer = (function (imports) {
         return _.parse('(' + value + ')^(' + power + ')');
     };
     Symbol.prototype = {
+        pushMinus: function() {
+            if ((this.group === CB || this.group === CP || this.group === PL) &&
+                this.multiplier.lessThan(0)) {
+                console.log();
+                console.log("replacing "+this.text("fractions"))
+                let m = this.multiplier.clone();
+                m.negate();
+                console.log("  negated multiplier: "+m)
+                this.toUnitMultiplier()
+                this.negate();
+                console.log("  negated main part: "+this)
+                this.multiplier = m;
+                console.log("  combined: "+this.text("fractions"));
+            }
+            if (this.length > 0) {
+                this.each(c => c.pushMinus);
+                console.log("  result: "+this.text("fractions"));
+            }
+            return this;
+        },
+        
         /**
          * Gets nth root accounting for rounding errors
          * @param {Number} n
