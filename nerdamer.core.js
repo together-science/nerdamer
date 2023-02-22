@@ -3332,7 +3332,7 @@ var nerdamer = (function (imports) {
                     this.symbols[termkey] = this.symbols[termkey].clone().negate();
                     // console.log("  negated term: "+this.symbols[termkey])
                     if (this.group === CB) {
-                        console.log("  is CB, breaking");
+                        // console.log("  is CB, breaking");
                         break;
                     }
                 }
