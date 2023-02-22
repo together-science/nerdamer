@@ -3319,21 +3319,32 @@ var nerdamer = (function (imports) {
     Symbol.prototype = {
         pushMinus: function() {
             if ((this.group === CB || this.group === CP || this.group === PL) &&
-                this.multiplier.lessThan(0)) {
+                this.multiplier.lessThan(0) && !even(this.power)) {
                 console.log();
                 console.log("replacing "+this.text("fractions"))
                 let m = this.multiplier.clone();
                 m.negate();
                 console.log("  negated multiplier: "+m)
-                this.toUnitMultiplier()
-                this.negate();
+                this.toUnitMultiplier();
+            
+                console.log("  unit main part: "+this)
+                for (let termkey in this.symbols) {
+                    this.symbols[termkey] = this.symbols[termkey].clone().negate();
+                    console.log("  negated term: "+this.symbols[termkey])
+                    if (this.group === CB) {
+                        console.log("  is CB, breaking");
+                        break;
+                    }
+                }
+                
                 console.log("  negated main part: "+this)
                 this.multiplier = m;
+
                 console.log("  combined: "+this.text("fractions"));
-            }
-            if (this.length > 0) {
-                this.each(c => c.pushMinus);
-                console.log("  result: "+this.text("fractions"));
+                if (this.length > 0) {
+                    this.each(c => c.pushMinus);
+                    console.log("  result: "+this.text("fractions"));
+                }
             }
             return this;
         },

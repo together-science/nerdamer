@@ -879,7 +879,7 @@ if((typeof module) !== 'undefined') {
         divideAndConquer: function (symbol, solve_for) {
             var sols = [];
             //see if we can solve the factors
-            var factors = core.Algebra.Factor.factor(symbol);
+            var factors = core.Algebra.Factor.factorInner(symbol);
             if(factors.group === CB) {
                 factors.each(function (x) {
                     x = Symbol.unwrapPARENS(x);
@@ -1460,7 +1460,7 @@ if((typeof module) !== 'undefined') {
                 //try to factor and solve
                 var factors = new core.Algebra.Classes.Factors();
 
-                core.Algebra.Factor.factor(eq, factors);
+                core.Algebra.Factor.factorInner(eq, factors);
                 //if the equation has more than one symbolic factor then solve those individually
                 if(factors.getNumberSymbolics() > 1) {
                     for(var x in factors.factors) {
@@ -1504,7 +1504,7 @@ if((typeof module) !== 'undefined') {
                             else if(deg === 3) {
                                 var solutions = []; //set to blank
                                 //first try to factor and solve
-                                var factored = core.Algebra.Factor.factor(eqns);
+                                var factored = core.Algebra.Factor.factorInner(eqns);
 
                                 //if it was successfully factored
                                 var solutions = [];
@@ -1587,7 +1587,7 @@ if((typeof module) !== 'undefined') {
             //place them in an array and call the quad or cubic function to get the results
             if(!eq.hasFunc(solve_for) && eq.isComposite()) {
                 try {
-                    var factored = core.Algebra.Factor.factor(eq.clone());
+                    var factored = core.Algebra.Factor.factorInner(eq.clone());
 
                     if(factored.group === CB) {
                         factored.each(function (x) {

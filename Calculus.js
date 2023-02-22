@@ -822,8 +822,8 @@ if((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
                 else if(a.isComposite() || b.isComposite()) {
                     var f = function (a, b) {
                         var d = __.diff(b, dx);
-                        var A = core.Algebra.Factor.factor(a),
-                                B = core.Algebra.Factor.factor(d);
+                        var A = core.Algebra.Factor.factorInner(a),
+                                B = core.Algebra.Factor.factorInner(d);
                         var q = _.divide(A, B);
                         return q;
                     };
@@ -1256,7 +1256,7 @@ if((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
                                     }
                                     else {
                                         var f = symbol.clone().toLinear();
-                                        var factored = core.Algebra.Factor.factor(f);
+                                        var factored = core.Algebra.Factor.factorInner(f);
                                         var was_factored = factored.toString() !== f.toString();
                                         if(core.Algebra.degree(f, _.parse(dx)).equals(2) && !was_factored) {
                                             try {
@@ -1529,7 +1529,7 @@ if((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
 
                             //only factor for multivariate which are polynomials
                             if(cfsymbol.clone().toLinear().isPoly(true) && core.Utils.variables(cfsymbol).length > 1) {
-                                cfsymbol = core.Algebra.Factor.factor(cfsymbol);
+                                cfsymbol = core.Algebra.Factor.factorInner(cfsymbol);
                             }
 
                             retval = __.integrate(cfsymbol, dx, depth);

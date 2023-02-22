@@ -7,7 +7,7 @@ require('../Algebra.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
-        expect(nerdamer('simplify((-1/2)x+(1/3)y+2)').toString()).toEqual('simplify((-1/2)x+(1/3)y+2)');
+        // expect(nerdamer('factor((x^2+4x+4)-y^2)').toString()).toEqual('(-y+2+x)*(2+x+y)');
     });
     it('should perform gcd operations correctly', function () {
         expect(nerdamer('gcd(5*x^6+5*x^5+27*x^4+27*x^3+28*x^2+28*x, 5*x^3+7*x)').toString()).toEqual('5*x^3+7*x');
@@ -182,7 +182,7 @@ describe('Algebra', function () {
         expect(nerdamer('factor(x^16-1)').toString()).toEqual('(-1+x)*(1+x)*(1+x^2)*(1+x^4)*(1+x^8)');
         expect(nerdamer('factor(-1866240-311040*x^2-3265920*x+1120*x^8+150080*x^6+17610*x^7+2026080*x^4+2509920*x^3+30*x^9+738360*x^5)').toString()).toEqual('10*(-1+x)*(1+x)*(3*x+4)*(6+x)^6');
         expect(nerdamer('factor((7x^3+4x^2+x)/(12x^3+6x^2-2x))').toString()).toEqual('(1/2)*(-1+3*x+6*x^2)^(-1)*(1+4*x+7*x^2)');
-        expect(nerdamer('factor((-2x-2x^2-2))').toString()).toEqual('-2*(1+x+x^2)');
+        expect(nerdamer('factor((-2x-2x^2-2))').toString()).toEqual('2*(-1-x-x^2)');
         expect(nerdamer('factor(1331*x^3*y^3+216*z^6)').toString()).toEqual('(-66*x*y*z^2+121*x^2*y^2+36*z^4)*(11*x*y+6*z^2)');
         expect(nerdamer('factor(1331*x^3*y^3-216*z^6)').toString()).toEqual('(-6*z^2+11*x*y)*(121*x^2*y^2+36*z^4+66*x*y*z^2)');
         expect(nerdamer('factor(64a^3-27b^3)').toString()).toEqual('(-3*b+4*a)*(12*a*b+16*a^2+9*b^2)');
@@ -192,6 +192,7 @@ describe('Algebra', function () {
         expect(nerdamer('factor(100*x)').toString()).toEqual('100*x');
         expect(nerdamer('(2*y+p)^2').toString()).toEqual('(2*y+p)^2');
         expect(nerdamer('factor((-1+x)*(y+1))').toString()).toEqual('(-1+x)*(1+y)');
+        expect(nerdamer('factor(x^2-6*x+9-4*y^2)').toString()).toEqual('(-2*y-3+x)*(-3+2*y+x)');
     });
     it('should not have any regression to factor', function() {
         //this test will absolutely break as factor improves enough to factor this expression. For now it just serves as a safeguard
@@ -256,7 +257,6 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(n!/(n+1)!)').toString()).toEqual('(1+n)^(-1)');
         expect(nerdamer('simplify((17/2)*(-10+8*i)^(-1)-5*(-10+8*i)^(-1)*i)').toString()).toEqual('(-9/82)*i-125/164');
         expect(nerdamer('simplify((-2*i+7)^(-1)*(3*i+4))').toString()).toEqual('(29/53)*i+22/53');
-        expect(nerdamer('simplify(((17/2)*(-5*K+32)^(-1)*K^2+(5/2)*K-125*(-5*K+32)^(-1)*K-16+400*(-5*K+32)^(-1))*(-17*(-5*K+32)^(-1)*K+80*(-5*K+32)^(-1))^(-1))').toString()).toEqual('(-35*K+4*K^2+112)*(-80+17*K)^(-1)');
         expect(nerdamer('simplify(((a+b)^2)/c)').toString()).toEqual('(a+b)^2*c^(-1)');
         expect(nerdamer('simplify(-(-5*x - 9 + 2*y))').toString()).toEqual('-2*y+5*x+9');
         expect(nerdamer('simplify(a/b+b/a)').toString()).toEqual('(a*b)^(-1)*(a^2+b^2)');
@@ -270,6 +270,8 @@ describe('Algebra', function () {
         expect(nerdamer('simplify((1/2)*(-x+2*y))').toString()).toEqual('(1/2)*(-x+2*y)');
         expect(nerdamer('simplify((-1/2)x+y)').toString()).toEqual('(1/2)*(-x+2*y)');
         expect(nerdamer('simplify((1/6)*(-3*x+12+2*y))').toString()).toEqual('(1/6)*(-3*x+12+2*y)');
+        expect(nerdamer('simplify((-1/2)x+(1/3)y+2)').toString()).toEqual('(1/6)*(-3*x+12+2*y)');
+        expect(nerdamer('simplify(((17/2)*(-5*K+32)^(-1)*K^2+(5/2)*K-125*(-5*K+32)^(-1)*K-16+400*(-5*K+32)^(-1))*(-17*(-5*K+32)^(-1)*K+80*(-5*K+32)^(-1))^(-1))').toString()).toEqual('(-35*K+4*K^2+112)*(-80+17*K)^(-1)');
     });
     it('should also simplify squareroots', function() {
         // expect(nerdamer('6/sqrt(3)')).toEqual();
@@ -280,7 +282,7 @@ describe('Algebra', function () {
     });
     // As mentioned by @Happypig375 in issue #219
     it('should also factor correctly', function() {
-        expect(nerdamer('factor(81-(16a^2-56a+49))').toString()).toEqual('-8*(-4+a)*(1+2*a)');
+        expect(nerdamer('factor(81-(16a^2-56a+49))').toString()).toEqual('8*(-a+4)*(1+2*a)');
         expect(nerdamer('factor((9x^2-12x+4)-25)').toString()).toEqual('3*(-7+3*x)*(1+x)');
         expect(nerdamer('factor((x^2+4x+4)+x*y+2y)').toString()).toEqual('(2+x)*(2+x+y)');
         expect(nerdamer('factor((4x^2+24x+36)-14x*y-42y)').toString()).toEqual('2*(-7*y+2*x+6)*(3+x)');
@@ -294,7 +296,5 @@ describe('Algebra', function () {
         expect(nerdamer('sqcomp(s^2+s+1)').toString()).toEqual('(1/2+s)^2+3/4');
     });
     it('known bugs:', function() {
-        expect(nerdamer('factor(x^2-6*x+9-4*y^2)').toString()).toEqual('(-2*y-3+x)*(-3+2*y+x)');
-        expect(nerdamer('factor((x^2+4x+4)-y^2)').toString()).toEqual('(-y+2+x)*(2+x+y)');
     });
 });

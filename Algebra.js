@@ -2046,7 +2046,7 @@ if((typeof module) !== 'undefined') {
             split: function (symbol) {
                 var c = new Symbol(1); //the constants part
                 var s = new Symbol(1); //the symbolic part
-                __.Factor.factor(symbol, new Factors()).each(function (x) {
+                __.Factor.factorInner(symbol, new Factors()).each(function (x) {
                     var t = _.parse(x);
                     if(x.isConstant(true)) {
                         c = _.multiply(c, t);
@@ -2248,7 +2248,12 @@ if((typeof module) !== 'undefined') {
                 return symbol;
             },
             factor: function (symbol, factors) {
-                // Don't try to factor constants
+                let retval = __.Factor.factorInner(symbol, factors);
+                retval.pushMinus();
+                return retval;
+            },
+            factorInner: function (symbol, factors) {
+                    // Don't try to factor constants
                 if(symbol.isConstant()) {
                     return core.Math2.factor(symbol);
                 }
@@ -2301,7 +2306,6 @@ if((typeof module) !== 'undefined') {
                     //put back the multiplier and power
                     retval = _.pow(_.multiply(m, t), p);
                 }
-                // retval.pushMinus();
                 return retval;
             },
             quadFactor: function (symbol, factors) {
@@ -2455,8 +2459,8 @@ if((typeof module) !== 'undefined') {
                         if(num.equals(symbol)) {
                             return symbol;
                         }
-                        nfact = __.Factor.factor(num);
-                        dfact = __.Factor.factor(den);
+                        nfact = __.Factor.factorInner(num);
+                        dfact = __.Factor.factorInner(den);
 
                         var n = __.Simplify.unstrip(num_array, nfact);
                         var d = __.Simplify.unstrip(den_array, dfact);
@@ -2660,7 +2664,7 @@ if((typeof module) !== 'undefined') {
                     var t = sqfr[1].toSymbol();
                     t.power = t.power.multiply(new Frac(p));
                     //send the factor to be fatored to be sure it's completely factored
-                    factors.add(__.Factor.factor(t));
+                    factors.add(__.Factor.factorInner(t));
 
                     var retval = __.Factor.squareFree(sqfr[0].toSymbol(), factors);
 
@@ -3008,7 +3012,7 @@ if((typeof module) !== 'undefined') {
                         if(a.isComposite() && b.power.equals(2)) {
                             //remove the square from b
                             b = remove_square(b);
-                            var f = __.Factor.factor(_.add(a, separated.constants));
+                            var f = __.Factor.factorInner(_.add(a, separated.constants));
                             if(f.power.equals(2)) {
                                 f.toLinear();
                                 factors.add(_.subtract(f.clone(), b.clone()));
@@ -3484,7 +3488,7 @@ if((typeof module) !== 'undefined') {
          */
         divide: function (symbol1, symbol2) {
             var result, remainder, factored, den;
-            factored = core.Algebra.Factor.factor(symbol1.clone());
+            factored = core.Algebra.Factor.factorInner(symbol1.clone());
             den = factored.getDenom();
             if(!den.isConstant('all')) {
                 symbol1 = _.expand(Symbol.unwrapPARENS(_.multiply(factored, den.clone())));
@@ -3838,7 +3842,7 @@ if((typeof module) !== 'undefined') {
         PartFrac: {
             createTemplate: function (den, denom_factors, f_array, v) {
                 //clean up the denominator function by factors so it reduces nicely
-                den = __.Factor.factor(den);
+                den = __.Factor.factorInner(den);
 
                 //clean up factors. This is so inefficient but factors are wrapped in parens for safety
                 den.each(function (x, key) {
@@ -3935,7 +3939,7 @@ if((typeof module) !== 'undefined') {
                     }
                     //first factor the denominator. This means that the strength of this
                     //algorithm depends on how well we can factor the denominator. 
-                    ofactors = __.Factor.factor(den);
+                    ofactors = __.Factor.factorInner(den);
                     //create the template. This method will create the template for solving 
                     //the partial fractions. So given x/(x-1)^2 the template creates A/(x-1)+B/(x-1)^2
                     template = __.PartFrac.createTemplate(den.clone(), ofactors, [], v);
@@ -4198,7 +4202,7 @@ if((typeof module) !== 'undefined') {
                             var t = new Symbol(1);
                             retval.each(function (x) {
                                 if(x.fname === 'tan') {
-                                    x = _.parse(core.Utils.format('({0})*sin({1})^({2})/cos({1})^({2})', x.multiplier, __.Simplify.simplify(x.args[0]), x.power));
+                                    x = _.parse(core.Utils.format('({0})*sin({1})^({2})/cos({1})^({2})', x.multiplier, __.Simplify._simplify(x.args[0]), x.power));
                                 }
                                 t = _.multiply(t, x);
                             });
@@ -4328,7 +4332,7 @@ if((typeof module) !== 'undefined') {
                     }
 
                     //otherwise simplify it some more
-                    return __.Simplify.simplify(retval);
+                    return __.Simplify._simplify(retval);
                 }
                 return symbol;
             },
@@ -4345,7 +4349,7 @@ if((typeof module) !== 'undefined') {
             sqrtSimp: function (symbol, sym_array) {
                 var retval;
                 if(symbol.isSQRT()) {
-                    var factored = __.Factor.factor(symbol.args[0].clone());
+                    var factored = __.Factor.factorInner(symbol.args[0].clone());
                     var m = _.parse(factored.multiplier);
                     var sign = m.sign();
 
@@ -4465,6 +4469,11 @@ if((typeof module) !== 'undefined') {
                 return [symbol, patterns];
             },
             simplify: function (symbol) {
+                let retval = __.Simplify._simplify(symbol);
+                retval.pushMinus();
+                return retval;
+            },
+            _simplify: function (symbol) {
                 //remove the multiplier to make calculation easier;
                 var sym_array = __.Simplify.strip(symbol);
                 symbol = sym_array.pop();
@@ -4502,7 +4511,7 @@ if((typeof module) !== 'undefined') {
                 // that there's no need to expand since factor already does that
 
                 // console.log("before factor: "+simplified.text());
-                simplified = __.Factor.factor(simplified);
+                simplified = __.Factor.factorInner(simplified);
                 // console.log("after factor: "+simplified.text());
 
                 //If the simplified is a sum then we can make a few more simplifications
@@ -4514,7 +4523,7 @@ if((typeof module) !== 'undefined') {
                     var r = new Symbol(0);
                     //return the sum of simplifications
                     simplified.each(function (x) {
-                        var s = __.Simplify.simplify(x);
+                        var s = __.Simplify._simplify(x);
                         r = _.add(r, s);
                     });
                     simplified = r;
@@ -4535,7 +4544,7 @@ if((typeof module) !== 'undefined') {
                  }
                  */
 
-                retval.pushMinus();
+                // retval.pushMinus();
 
                 // console.log("final result: "+retval.text());
                 return retval;
