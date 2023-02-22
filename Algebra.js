@@ -2253,12 +2253,19 @@ if((typeof module) !== 'undefined') {
                 return retval;
             },
             factorInner: function (symbol, factors) {
-                    // Don't try to factor constants
+                // Don't try to factor constants
                 if(symbol.isConstant()) {
                     return core.Math2.factor(symbol);
                 }
 
                 var _symbol = _.parse(symbol);
+
+                // STILL don't try to factor constants
+                if(_symbol.isConstant()) {
+                    return core.Math2.factor(_symbol);
+                }
+
+                
                 var retval = __.Factor._factor(_symbol, factors);
                 if(retval.equals(symbol)) {
                     return retval;
@@ -4281,6 +4288,11 @@ if((typeof module) !== 'undefined') {
                     retval = __.Simplify.unstrip(sym_array, retval).distributeMultiplier();
                     symbol = retval;
                     // console.log("result: "+symbol.text());
+                } else if (symbol.containsFunction(['log', 'log10'])) {
+                    for (let termkey in symbol.symbols) {
+                        let term = symbol.symbols[termkey];
+                        symbol.symbols[termkey] = __.Simplify.logSimp(term);
+                    }
                 }
 
                 return symbol;

@@ -7,7 +7,8 @@ require('../Algebra.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
-        // expect(nerdamer('factor((x^2+4x+4)-y^2)').toString()).toEqual('(-y+2+x)*(2+x+y)');
+        expect(nerdamer('simplify(log(a*b)-log(a)-log(b))').toString()).toEqual('0');
+        expect(nerdamer('simplify(log(a/b)-log(a)-log(b))').toString()).toEqual('-2*log(b)');
     });
     it('should perform gcd operations correctly', function () {
         expect(nerdamer('gcd(5*x^6+5*x^5+27*x^4+27*x^3+28*x^2+28*x, 5*x^3+7*x)').toString()).toEqual('5*x^3+7*x');
@@ -193,6 +194,7 @@ describe('Algebra', function () {
         expect(nerdamer('(2*y+p)^2').toString()).toEqual('(2*y+p)^2');
         expect(nerdamer('factor((-1+x)*(y+1))').toString()).toEqual('(-1+x)*(1+y)');
         expect(nerdamer('factor(x^2-6*x+9-4*y^2)').toString()).toEqual('(-2*y-3+x)*(-3+2*y+x)');
+        expect(nerdamer('factor((x^2+4x+4)-y^2)').toString()).toEqual('(-y+2+x)*(2+x+y)');
     });
     it('should not have any regression to factor', function() {
         //this test will absolutely break as factor improves enough to factor this expression. For now it just serves as a safeguard
