@@ -287,7 +287,6 @@ describe('Algebra', function () {
         expect(nerdamer('roots((-1)^(1/5))').evaluate().text()).toEqual('[0.5877852522924731*i+0.809016994374947,-0.309016994374947+0.9510565162951536*i,-1,-0.309016994374948-0.9510565162951536*i,-0.5877852522924734*i+0.809016994374947]');
         expect(nerdamer('roots((2)^(1/3))').evaluate().text()).toEqual('[1.122462048309381,-1.122462048309381]');
     });
-    // As mentioned by @Happypig375 in issue #219
     it('should also factor correctly', function() {
         expect(nerdamer('factor(81-(16a^2-56a+49))').toString()).toEqual('8*(-a+4)*(1+2*a)');
         expect(nerdamer('factor((9x^2-12x+4)-25)').toString()).toEqual('3*(-7+3*x)*(1+x)');
@@ -303,7 +302,7 @@ describe('Algebra', function () {
         expect(nerdamer('sqcomp(s^2+s+1)').toString()).toEqual('(1/2+s)^2+3/4');
     });
     it('known flaws:', function() {
-        expect(nerdamer('6/sqrt(3)').toString()).toEqual('2*sqrt(3)');
+        expect(nerdamer('simplify(6/sqrt(3))').toString()).toEqual('2*sqrt(3)');
         // expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2+6*baseunit_m^2*sin(7*alpha)^2+8*baseunit_m^2)').toString()).toEqual();
         // expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2)').toString()).toEqual();
         // expect(nerdamer('sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2)').toString()).toEqual();
