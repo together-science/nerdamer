@@ -195,6 +195,9 @@ describe('Algebra', function () {
         expect(nerdamer('factor((-1+x)*(y+1))').toString()).toEqual('(-1+x)*(1+y)');
         expect(nerdamer('factor(x^2-6*x+9-4*y^2)').toString()).toEqual('(-2*y-3+x)*(-3+2*y+x)');
         expect(nerdamer('factor((x^2+4x+4)-y^2)').toString()).toEqual('(-y+2+x)*(2+x+y)');
+        expect(nerdamer('factor(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha))').toString()).toEqual('(cos(alpha)+sin(alpha))*baseunit_m^2');
+        expect(nerdamer('factor(baseunit_m^2*sin(alpha)+baseunit_m^2)').toString()).toEqual('(1+sin(alpha))*baseunit_m^2');
+        expect(nerdamer('factor(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2+6*baseunit_m^2*sin(7*alpha)^2+8*baseunit_m^2)').toString()).toEqual('2*(2*cos(5*alpha)^2+3*sin(7*alpha)^2+4+sin(3*alpha))*baseunit_m^2');
     });
     it('should not have any regression to factor', function() {
         //this test will absolutely break as factor improves enough to factor this expression. For now it just serves as a safeguard
@@ -276,7 +279,9 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(((17/2)*(-5*K+32)^(-1)*K^2+(5/2)*K-125*(-5*K+32)^(-1)*K-16+400*(-5*K+32)^(-1))*(-17*(-5*K+32)^(-1)*K+80*(-5*K+32)^(-1))^(-1))').toString()).toEqual('(-35*K+4*K^2+112)*(-80+17*K)^(-1)');
     });
     it('should also simplify squareroots', function() {
-        // expect(nerdamer('6/sqrt(3)')).toEqual();
+        expect(nerdamer('baseunit_m*sqrt(1/baseunit_m^2)').toString()).toEqual('1');
+        expect(nerdamer('sqrt(2*baseunit_m^2+2*baseunit_m^2)').toString()).toEqual('2*baseunit_m');
+        expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(sin(3*alpha))');
     });
     it('should calculate nth roots correctly', function() {
         expect(nerdamer('roots((-1)^(1/5))').evaluate().text()).toEqual('[0.5877852522924731*i+0.809016994374947,-0.309016994374947+0.9510565162951536*i,-1,-0.309016994374948-0.9510565162951536*i,-0.5877852522924734*i+0.809016994374947]');
@@ -297,6 +302,12 @@ describe('Algebra', function () {
         expect(nerdamer('sqcomp(9*x^2-18*x+17)').toString()).toEqual('(-3+3*x)^2+8');
         expect(nerdamer('sqcomp(s^2+s+1)').toString()).toEqual('(1/2+s)^2+3/4');
     });
-    it('known bugs:', function() {
+    it('known flaws:', function() {
+        expect(nerdamer('6/sqrt(3)').toString()).toEqual('2*sqrt(3)');
+        // expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2+6*baseunit_m^2*sin(7*alpha)^2+8*baseunit_m^2)').toString()).toEqual();
+        // expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2)').toString()).toEqual();
+        // expect(nerdamer('sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2)').toString()).toEqual();
+        // expect(nerdamer('sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha))').toString()).toEqual('baseunit_m*sqrt(sin(alpha)+cos(alpha))');
+        expect(nerdamer('sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2)').toString()).toEqual('baseunit_m*sqrt(sin(alpha)+1)');
     });
 });
