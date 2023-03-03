@@ -303,7 +303,7 @@ describe('Algebra', function () {
         expect(nerdamer('sqcomp(9*x^2-18*x+17)').toString()).toEqual('(-3+3*x)^2+8');
         expect(nerdamer('sqcomp(s^2+s+1)').toString()).toEqual('(1/2+s)^2+3/4');
     });
-    it('known flaws:', function() {
+    it('known algebra flaws:', function() {
         expect(nerdamer('simplify(6/sqrt(3))').toString()).toEqual('2*sqrt(3)');
     });
 });

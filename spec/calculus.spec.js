@@ -80,10 +80,6 @@ describe('calculus', function () {
         expect(nerdamer('limit((x+1)^(1+1/x)-x^(1+x),x, Infinity)').toString()).toEqual('-Infinity');
         expect(nerdamer('limit(x/(x+1)^2, x, -1)').toString()).toEqual('-Infinity');
         expect(nerdamer('limit(log(x),x, 0)').toString()).toEqual('-Infinity');
-
-        // Revisit.
-        // expect(nerdamer('limit(cos(sin(x)+2), x, Infinity)').toString()).toEqual('[cos(1),cos(3)]');
-        expect(nerdamer('limit((2sin(x)-sin(2x))/(x-sin(x)),x,0)').toString()).toEqual('6');
         expect(nerdamer('limit((3*sin(x)-sin(2*x))/(x-sin(x)),x,0)').toString()).toEqual('Infinity');
     });
 
@@ -177,5 +173,11 @@ describe('calculus', function () {
         expect(nerdamer('integrate(1/(sqrt(1-1/x^2)*x), x)').toString()).toEqual('(-1/2)*log(1+sqrt(-x^(-2)+1))+(1/2)*log(-1+sqrt(-x^(-2)+1))');
         expect(nerdamer('integrate(exp(2*log(x)),x)').toString()).toEqual('(1/3)*x^3');
     });
+
+    it('known calculus flaws', function () {
+        expect(nerdamer('limit(cos(sin(x)+2), x, Infinity)').toString()).toEqual('[cos(1),cos(3)]');
+        expect(nerdamer('limit((2sin(x)-sin(2x))/(x-sin(x)),x,0)').toString()).toEqual('6');
+    });
+    
 
 });

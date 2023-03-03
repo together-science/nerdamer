@@ -4615,7 +4615,7 @@ if((typeof module) !== 'undefined') {
 
     // Add a link to simplify
     core.Expression.prototype.simplify = function () {
-        return __.Simplify.simplify(this.symbol);
+        return new Expression(__.Simplify.simplify(this.symbol));
     };
 
     nerdamer.useAlgebraDiv = function () {
