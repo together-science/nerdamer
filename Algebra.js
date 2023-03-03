@@ -13,8 +13,19 @@ if((typeof module) !== 'undefined') {
     require('./Calculus.js');
 }
 
+
+
 (function () {
     "use strict";
+
+    var _debuglevel = 0;
+    var debuglevel = function(n) {
+        _debuglevel += n;
+    }
+    var debugout = function(s) {
+        var prefix = "                                                  ".substring(0,_debuglevel);
+        console.log(prefix+s);
+    }
 
     /*shortcuts*/
     var core = nerdamer.getCore(),
@@ -4359,18 +4370,30 @@ if((typeof module) !== 'undefined') {
                 return symbol;
             },
             sqrtSimp: function (symbol, sym_array) {
-                var retval;
-                if(symbol.isSQRT()) {
-                    var factored = __.Factor.factorInner(symbol.args[0].clone());
-                    var m = _.parse(factored.multiplier);
-                    var sign = m.sign();
+                let retval;
+                let workDone = false;
 
-                    var retval = _.sqrt(m.abs());
-                    var arg;
+                try {
+                    debuglevel(1);
+                    // debugout("input:  "+symbol.toString());
 
-                    if(isInt(retval)) {
+                    if(symbol.isSQRT()) {
+                        // symbol is itself sqrt
+
+                        // factor it
+                        let factored = __.Factor.factorInner(symbol.args[0].clone());
+
+                        // get a sanitized version of the argument's multiplier
+                        let m = _.parse(factored.multiplier);
+                        // and its sign
+                        let sign = m.sign();
+
+                        // make an initial return value 
+                        retval = _.sqrt(m.abs());
+                        let arg;
 
                         if(factored.group === CB) {
+                            // monomial arg
                             var rem = new Symbol(1);
 
                             factored.each(function (x) {
@@ -4390,43 +4413,63 @@ if((typeof module) !== 'undefined') {
                                 }
 
                             });
-                            var t = _.multiply(rem, _.parse(sign));
+                            let t = _.multiply(rem, _.parse(sign));
                             arg = _.sqrt(t.clone());
 
                             // Expand if it's imaginary
-                            if(arg.isImaginary) {
+                            if(arg.isImaginary()) {
                                 arg = _.sqrt(_.expand(t.clone()));
                             }
+                            workDone = true;
                         }
-                        else {
-                            // Strip the multiplier
-                            arg = _.sqrt(factored.clone().toUnitMultiplier());
-                        }
-                        return _.multiply(retval, arg);
 
+                        // Strip the multiplier and put the rest back together with retval
+                        arg = _.sqrt(factored.clone().toUnitMultiplier());
+
+                        // put the result back with the multiplier
+                        retval = _.multiply(retval, arg);
+                    }
+                    else if(symbol.isComposite() && symbol.isLinear()) {
+                        // polynomial or CP => sum of things
+                        retval = new Symbol(0);
+                        symbol.each(function (x) {
+                            retval = _.add(retval, __.Simplify.sqrtSimp(x));
+                        }, true);
+                        // Put back the multiplier
+                        retval = _.multiply(retval, _.parse(symbol.multiplier));
+                        workDone = true;
+                    }
+                    else if(symbol.group === CB) {
+                        // monomial
+                        retval = _.parse(symbol.multiplier);
+                        symbol.each(function (x) {
+                            var simp = __.Simplify.sqrtSimp(x);
+                            retval = _.multiply(retval, simp);
+                        });
+                        // Put back the power
+                        retval = _.pow(retval, _.parse(symbol.power));
+                        workDone = true;
                     }
 
-                }
-                else if(symbol.isComposite() && symbol.isLinear()) {
-                    retval = new Symbol(0);
-                    symbol.each(function (x) {
-                        retval = _.add(retval, __.Simplify.sqrtSimp(x));
-                    }, true);
-                    // Put back the multiplier
-                    retval = _.multiply(retval, _.parse(symbol.multiplier));
-                }
-                else if(symbol.group === CB) {
-                    retval = _.parse(symbol.multiplier);
-                    symbol.each(function (x) {
-                        var simp = __.Simplify.sqrtSimp(x);
-                        retval = _.multiply(retval, simp);
+                    if (!workDone) {
+                        if(retval && !isInt(retval)) {
+                            // if we can't even pull an integer out, revert
+                            // to the cautious fallback
+                            retval = null;
+                        }
+                    }
 
-                    }, true);
-                    // Put back the power
-                    retval = _.pow(retval, _.parse(symbol.power));
+                    // fallback: original symbol
+                    retval = retval || _.parse(symbol);
+                    // debugout("result: "+retval.toString());
+                    // debugout("");
+                    return retval;
+                } catch (error) {
+                    debugout("crash in sqrtsimp, symbol: "+symbol.text()+" "+error.msg);
+                    return symbol;
+                } finally {
+                    debuglevel(-1);
                 }
-
-                return retval ? retval : _.parse(symbol);
             },
             /**
              * Unused. The goal is to substitute out patterns but it currently doesn't work.
@@ -4507,7 +4550,7 @@ if((typeof module) !== 'undefined') {
 
                 // Simplify sqrt within the symbol
                 // todo: why does this break calculus tests?
-                // simplified = __.Simplify.sqrtSimp(simplified, sym_array);
+                simplified = __.Simplify.sqrtSimp(simplified, sym_array);
 
                 // Try trig simplificatons e.g. cos(x)^2+sin(x)^2
                 simplified = __.Simplify.trigSimp(simplified);

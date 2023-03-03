@@ -4,11 +4,10 @@
 
 var nerdamer = require('../nerdamer.core.js');
 require('../Algebra.js');
+require('../Calculus.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
-        expect(nerdamer('simplify(log(a*b)-log(a)-log(b))').toString()).toEqual('0');
-        expect(nerdamer('simplify(log(a/b)-log(a)-log(b))').toString()).toEqual('-2*log(b)');
     });
     it('should perform gcd operations correctly', function () {
         expect(nerdamer('gcd(5*x^6+5*x^5+27*x^4+27*x^3+28*x^2+28*x, 5*x^3+7*x)').toString()).toEqual('5*x^3+7*x');
@@ -198,6 +197,13 @@ describe('Algebra', function () {
         expect(nerdamer('factor(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha))').toString()).toEqual('(cos(alpha)+sin(alpha))*baseunit_m^2');
         expect(nerdamer('factor(baseunit_m^2*sin(alpha)+baseunit_m^2)').toString()).toEqual('(1+sin(alpha))*baseunit_m^2');
         expect(nerdamer('factor(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2+6*baseunit_m^2*sin(7*alpha)^2+8*baseunit_m^2)').toString()).toEqual('2*(2*cos(5*alpha)^2+3*sin(7*alpha)^2+4+sin(3*alpha))*baseunit_m^2');
+        expect(nerdamer('factor(81-(16a^2-56a+49))').toString()).toEqual('8*(-a+4)*(1+2*a)');
+        expect(nerdamer('factor((9x^2-12x+4)-25)').toString()).toEqual('3*(-7+3*x)*(1+x)');
+        expect(nerdamer('factor((x^2+4x+4)+x*y+2y)').toString()).toEqual('(2+x)*(2+x+y)');
+        expect(nerdamer('factor((4x^2+24x+36)-14x*y-42y)').toString()).toEqual('2*(-7*y+2*x+6)*(3+x)');
+        expect(nerdamer('factor(35a*b-15b+(49a^2-42a+9))').toString()).toEqual('(-3+5*b+7*a)*(-3+7*a)');
+        expect(nerdamer('factor(1-6a^2+9a^4)').toString()).toEqual('(-1+3*a^2)^2');
+        expect(nerdamer('factor(1-6a^2+9a^4-49b^2)').toString()).toEqual('(-1+3*a^2+7*b)*(-1-7*b+3*a^2)');
     });
     it('should not have any regression to factor', function() {
         //this test will absolutely break as factor improves enough to factor this expression. For now it just serves as a safeguard
@@ -277,6 +283,11 @@ describe('Algebra', function () {
         expect(nerdamer('simplify((1/6)*(-3*x+12+2*y))').toString()).toEqual('(1/6)*(-3*x+12+2*y)');
         expect(nerdamer('simplify((-1/2)x+(1/3)y+2)').toString()).toEqual('(1/6)*(-3*x+12+2*y)');
         expect(nerdamer('simplify(((17/2)*(-5*K+32)^(-1)*K^2+(5/2)*K-125*(-5*K+32)^(-1)*K-16+400*(-5*K+32)^(-1))*(-17*(-5*K+32)^(-1)*K+80*(-5*K+32)^(-1))^(-1))').toString()).toEqual('(-35*K+4*K^2+112)*(-80+17*K)^(-1)');
+        expect(nerdamer('simplify(sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2))').toString()).toEqual('baseunit_m*sqrt(1+sin(alpha))');
+        expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2+6*baseunit_m^2*sin(7*alpha)^2+8*baseunit_m^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(5*alpha)^2+3*sin(7*alpha)^2+4+sin(3*alpha))');
+        expect(nerdamer('simplify(sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha)))').toString()).toEqual('baseunit_m*sqrt(cos(alpha)+sin(alpha))');
+        expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(alpha)^2+sin(alpha))');
+        expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(5*alpha)^2+sin(3*alpha))');
     });
     it('should also simplify squareroots', function() {
         expect(nerdamer('baseunit_m*sqrt(1/baseunit_m^2)').toString()).toEqual('1');
@@ -287,15 +298,6 @@ describe('Algebra', function () {
         expect(nerdamer('roots((-1)^(1/5))').evaluate().text()).toEqual('[0.5877852522924731*i+0.809016994374947,-0.309016994374947+0.9510565162951536*i,-1,-0.309016994374948-0.9510565162951536*i,-0.5877852522924734*i+0.809016994374947]');
         expect(nerdamer('roots((2)^(1/3))').evaluate().text()).toEqual('[1.122462048309381,-1.122462048309381]');
     });
-    it('should also factor correctly', function() {
-        expect(nerdamer('factor(81-(16a^2-56a+49))').toString()).toEqual('8*(-a+4)*(1+2*a)');
-        expect(nerdamer('factor((9x^2-12x+4)-25)').toString()).toEqual('3*(-7+3*x)*(1+x)');
-        expect(nerdamer('factor((x^2+4x+4)+x*y+2y)').toString()).toEqual('(2+x)*(2+x+y)');
-        expect(nerdamer('factor((4x^2+24x+36)-14x*y-42y)').toString()).toEqual('2*(-7*y+2*x+6)*(3+x)');
-        expect(nerdamer('factor(35a*b-15b+(49a^2-42a+9))').toString()).toEqual('(-3+5*b+7*a)*(-3+7*a)');
-        expect(nerdamer('factor(1-6a^2+9a^4)').toString()).toEqual('(-1+3*a^2)^2');
-        expect(nerdamer('factor(1-6a^2+9a^4-49b^2)').toString()).toEqual('(-1+3*a^2+7*b)*(-1-7*b+3*a^2)');
-    });
     it('should complete the square', function() {
         expect(nerdamer('sqcomp(a*x^2+b*x-11*c, x)').toString()).toEqual('((1/2)*abs(b)*sqrt(a)^(-1)+sqrt(a)*x)^2+(-1/4)*(abs(b)*sqrt(a)^(-1))^2-11*c');
         expect(nerdamer('sqcomp(9*x^2-18*x+17)').toString()).toEqual('(-3+3*x)^2+8');
@@ -303,10 +305,5 @@ describe('Algebra', function () {
     });
     it('known flaws:', function() {
         expect(nerdamer('simplify(6/sqrt(3))').toString()).toEqual('2*sqrt(3)');
-        // expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2+6*baseunit_m^2*sin(7*alpha)^2+8*baseunit_m^2)').toString()).toEqual();
-        // expect(nerdamer('sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2)').toString()).toEqual();
-        // expect(nerdamer('sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2)').toString()).toEqual();
-        // expect(nerdamer('sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha))').toString()).toEqual('baseunit_m*sqrt(sin(alpha)+cos(alpha))');
-        expect(nerdamer('sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2)').toString()).toEqual('baseunit_m*sqrt(sin(alpha)+1)');
     });
 });

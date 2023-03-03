@@ -18,6 +18,8 @@ var nerdamer = (function (imports) {
 //version ======================================================================
     var version = '1.1.13';
 
+    
+
 //inits ========================================================================
     var _ = new Parser(); //nerdamer's parser
 
@@ -528,7 +530,7 @@ var nerdamer = (function (imports) {
      * @param {Number} num
      */
     var isInt = function (num) {
-        return /^[-+]?\d+e?\+?\d*$/gim.test(num.toString());
+        return (typeof num !== "undefined") && /^[-+]?\d+e?\+?\d*$/gim.test(num.toString());
     };
 
     /**
@@ -12551,3 +12553,6 @@ var nerdamer = (function (imports) {
 if((typeof module) !== 'undefined') {
     module.exports = nerdamer;
 };
+
+
+
