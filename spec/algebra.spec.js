@@ -288,6 +288,8 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha)))').toString()).toEqual('baseunit_m*sqrt(cos(alpha)+sin(alpha))');
         expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(alpha)^2+sin(alpha))');
         expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(5*alpha)^2+sin(3*alpha))');
+        // also test the non-string API
+        expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x))');
     });
     it('should also simplify squareroots', function() {
         expect(nerdamer('baseunit_m*sqrt(1/baseunit_m^2)').toString()).toEqual('1');
