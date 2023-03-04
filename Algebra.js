@@ -4374,15 +4374,15 @@ if((typeof module) !== 'undefined') {
                 let workDone = false;
 
                 try {
-                    debuglevel(1);
+                    // debuglevel(1);
                     // debugout("input:  "+symbol.toString());
 
                     if(symbol.isSQRT()) {
                         // symbol is itself sqrt
-
                         // factor it
                         let factored = __.Factor.factorInner(symbol.args[0].clone());
 
+                        
                         // get a sanitized version of the argument's multiplier
                         let m = _.parse(factored.multiplier);
                         // and its sign
@@ -4420,7 +4420,6 @@ if((typeof module) !== 'undefined') {
                             if(arg.isImaginary()) {
                                 arg = _.sqrt(_.expand(t.clone()));
                             }
-                            workDone = true;
                         }
 
                         // Strip the multiplier and put the rest back together with retval
@@ -4428,6 +4427,9 @@ if((typeof module) !== 'undefined') {
 
                         // put the result back with the multiplier
                         retval = _.multiply(retval, arg);
+                        // todo: pow does not accept a Frac as the second arg. Fix this.
+                        retval = _.pow(retval, new Symbol(symbol.power));
+                        workDone = true;
                     }
                     else if(symbol.isComposite() && symbol.isLinear()) {
                         // polynomial or CP => sum of things
@@ -4468,7 +4470,7 @@ if((typeof module) !== 'undefined') {
                     debugout("crash in sqrtsimp, symbol: "+symbol.text()+" "+error.msg);
                     return symbol;
                 } finally {
-                    debuglevel(-1);
+                    // debuglevel(-1);
                 }
             },
             /**
@@ -4615,7 +4617,8 @@ if((typeof module) !== 'undefined') {
 
     // Add a link to simplify
     core.Expression.prototype.simplify = function () {
-        return new core.Expression(__.Simplify.simplify(this.symbol));
+        let retval = new core.Expression(__.Simplify.simplify(this.symbol));
+        return retval;
     };
 
     nerdamer.useAlgebraDiv = function () {

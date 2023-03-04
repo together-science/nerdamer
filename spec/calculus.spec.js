@@ -5,7 +5,7 @@
 var nerdamer = require('../nerdamer.core.js');
 var round = nerdamer.getCore().Utils.round;
 
-describe('calculus', function () {
+describe('Calculus', function () {
 
     it('should differentiate correctly', function () {
         expect(nerdamer('diff(cos(x),x)').toString()).toEqual('-sin(x)');
@@ -174,7 +174,7 @@ describe('calculus', function () {
         expect(nerdamer('integrate(exp(2*log(x)),x)').toString()).toEqual('(1/3)*x^3');
     });
 
-    it('known calculus flaws', function () {
+    it('known flaws', function () {
         expect(nerdamer('limit(cos(sin(x)+2), x, Infinity)').toString()).toEqual('[cos(1),cos(3)]');
         expect(nerdamer('limit((2sin(x)-sin(2x))/(x-sin(x)),x,0)').toString()).toEqual('6');
     });

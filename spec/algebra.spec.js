@@ -8,6 +8,8 @@ require('../Calculus.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
+        expect(nerdamer('simplify(sqrt(x)^(-1))').toString()).toEqual('sqrt(x)^(-1)');
+        expect(nerdamer('limit((x^(1/2)+x^(-1/2))/(x^(1/2)-x^(-1/2)),x,Infinity)').toString()).toEqual('1');
     });
     it('should perform gcd operations correctly', function () {
         expect(nerdamer('gcd(5*x^6+5*x^5+27*x^4+27*x^3+28*x^2+28*x, 5*x^3+7*x)').toString()).toEqual('5*x^3+7*x');
@@ -288,8 +290,9 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(sqrt(baseunit_m^2*sin(alpha)+baseunit_m^2*cos(alpha)))').toString()).toEqual('baseunit_m*sqrt(cos(alpha)+sin(alpha))');
         expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(alpha)^2+sin(alpha))');
         expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(5*alpha)^2+sin(3*alpha))');
+        expect(nerdamer('simplify(sqrt(4+4*x))').toString()).toBe('2*sqrt(1+x)');
         // also test the non-string API
-        expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x))');
+        expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x)');
     });
     it('should also simplify squareroots', function() {
         expect(nerdamer('baseunit_m*sqrt(1/baseunit_m^2)').toString()).toEqual('1');
@@ -305,7 +308,7 @@ describe('Algebra', function () {
         expect(nerdamer('sqcomp(9*x^2-18*x+17)').toString()).toEqual('(-3+3*x)^2+8');
         expect(nerdamer('sqcomp(s^2+s+1)').toString()).toEqual('(1/2+s)^2+3/4');
     });
-    it('known algebra flaws:', function() {
+    it('known flaws:', function() {
         expect(nerdamer('simplify(6/sqrt(3))').toString()).toEqual('2*sqrt(3)');
     });
 });
