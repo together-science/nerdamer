@@ -4389,7 +4389,8 @@ if((typeof module) !== 'undefined') {
                         let sign = m.sign();
 
                         // make an initial return value 
-                        retval = _.sqrt(m.abs());
+                        // retval = _.sqrt(m.abs());
+                        retval = new Symbol(1);
                         let arg;
 
                         if(factored.group === CB) {
@@ -4425,10 +4426,12 @@ if((typeof module) !== 'undefined') {
                         // Strip the multiplier and put the rest back together with retval
                         arg = _.sqrt(factored.clone().toUnitMultiplier());
 
-                        // put the result back with the multiplier
+                        // put the result back
                         retval = _.multiply(retval, arg);
                         // todo: pow does not accept a Frac as the second arg. Fix this.
                         retval = _.pow(retval, new Symbol(symbol.power));
+                        // put back the multiplier
+                        retval = _.multiply(retval, _.sqrt(m.abs()));
                         workDone = true;
                     }
                     else if(symbol.isComposite() && symbol.isLinear()) {
