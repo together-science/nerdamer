@@ -291,6 +291,8 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(alpha)+(4)*baseunit_m^2*cos(alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(alpha)^2+sin(alpha))');
         expect(nerdamer('simplify(sqrt(2*baseunit_m^2*sin(3*alpha)+(4)*baseunit_m^2*cos(5*alpha)^2))').toString()).toEqual('baseunit_m*sqrt(2)*sqrt(2*cos(5*alpha)^2+sin(3*alpha))');
         expect(nerdamer('simplify(sqrt(4+4*x))').toString()).toBe('2*sqrt(1+x)');
+        expect(nerdamer('simplify(0.5sqrt(4a+4y))').toString()).toEqual('sqrt(a+y)');
+        expect(nerdamer('simplify((1/2)*sqrt(-4*y+36))').toString() ).toEqual('sqrt(-y+9)');
         // also test the non-string API
         expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x)');
     });

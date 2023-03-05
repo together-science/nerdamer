@@ -4379,17 +4379,18 @@ if((typeof module) !== 'undefined') {
 
                     if(symbol.isSQRT()) {
                         // symbol is itself sqrt
-                        // factor it
+                        // save outer multiplier
+                        let mOuter = symbol.multiplier.clone();
+
+                        // now factor it
                         let factored = __.Factor.factorInner(symbol.args[0].clone());
 
-                        
                         // get a sanitized version of the argument's multiplier
                         let m = _.parse(factored.multiplier);
                         // and its sign
                         let sign = m.sign();
 
                         // make an initial return value 
-                        // retval = _.sqrt(m.abs());
                         retval = new Symbol(1);
                         let arg;
 
@@ -4421,16 +4422,20 @@ if((typeof module) !== 'undefined') {
                             if(arg.isImaginary()) {
                                 arg = _.sqrt(_.expand(t.clone()));
                             }
+                        } else {
+                            // put together the argument with the sign
+                            // but without the multiplier
+                            arg = factored.clone().toUnitMultiplier();
+                            arg = _.multiply(arg, new Symbol(sign));
+                            arg = _.sqrt(arg);
                         }
-
-                        // Strip the multiplier and put the rest back together with retval
-                        arg = _.sqrt(factored.clone().toUnitMultiplier());
 
                         // put the result back
                         retval = _.multiply(retval, arg);
                         // put back the multiplier
-                        retval = _.multiply(retval, _.sqrt(m.abs()));
                         retval = _.pow(retval, _.parse(symbol.power));
+                        retval = _.multiply(retval, _.sqrt(m.abs()));
+                        retval = _.multiply(retval, _.parse(mOuter));
                         workDone = true;
                     }
                     else if(symbol.isComposite() && symbol.isLinear()) {
@@ -4439,9 +4444,9 @@ if((typeof module) !== 'undefined') {
                         symbol.each(function (x) {
                             retval = _.add(retval, __.Simplify.sqrtSimp(x));
                         }, true);
-                        // Put back the multiplier
-                        retval = _.multiply(retval, _.parse(symbol.multiplier));
+                        // Put back the multiplier and power
                         retval = _.pow(retval, _.parse(symbol.power));
+                        retval = _.multiply(retval, _.parse(symbol.multiplier));
                         workDone = true;
                     }
                     else if(symbol.group === CB) {
