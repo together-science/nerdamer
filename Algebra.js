@@ -4428,10 +4428,9 @@ if((typeof module) !== 'undefined') {
 
                         // put the result back
                         retval = _.multiply(retval, arg);
-                        // todo: pow does not accept a Frac as the second arg. Fix this.
-                        retval = _.pow(retval, new Symbol(symbol.power));
                         // put back the multiplier
                         retval = _.multiply(retval, _.sqrt(m.abs()));
+                        retval = _.pow(retval, _.parse(symbol.power));
                         workDone = true;
                     }
                     else if(symbol.isComposite() && symbol.isLinear()) {
@@ -4442,17 +4441,19 @@ if((typeof module) !== 'undefined') {
                         }, true);
                         // Put back the multiplier
                         retval = _.multiply(retval, _.parse(symbol.multiplier));
+                        retval = _.pow(retval, _.parse(symbol.power));
                         workDone = true;
                     }
                     else if(symbol.group === CB) {
                         // monomial
-                        retval = _.parse(symbol.multiplier);
+                        retval = new Symbol(1);
                         symbol.each(function (x) {
                             var simp = __.Simplify.sqrtSimp(x);
                             retval = _.multiply(retval, simp);
                         });
-                        // Put back the power
+                        // Put back the power and multiplier
                         retval = _.pow(retval, _.parse(symbol.power));
+                        retval = _.multiply(retval, _.parse(symbol.multiplier));
                         workDone = true;
                     }
 
