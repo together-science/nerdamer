@@ -73,7 +73,7 @@ describe('Solve', function () {
         expect(nerdamer('solve(log(y) = -t, y)').toString() ).toEqual('[e^(-t)]');
         expect(nerdamer('solve(y=exp(4x),x)').toString() ).toEqual('[(1/4)*log(y)]');
         expect(nerdamer('solve(x*y+y=0,x)').toString() ).toEqual('[-1]');
-        expect(nerdamer('solve((y+((x)^(2)))=9,x)').toString() ).toEqual('');
+        expect(nerdamer('(y+((x)^(2)))=9').solveFor('x').toString() ).toEqual('sqrt(-y+9),-sqrt(-y+9)');
     });
     it('should solve system of equations correctly', function () {
         expect(nerdamer.solveEquations(['x+y=1', '2*x=6', '4*z+y=6']).toString()).toEqual('x,3,y,-2,z,2');
