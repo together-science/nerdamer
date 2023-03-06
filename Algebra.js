@@ -2264,29 +2264,44 @@ if((typeof module) !== 'undefined') {
                 return retval;
             },
             factorInner: function (symbol, factors) {
-                // Don't try to factor constants
+                // Don't try to factor constants,
+                // do it with Math2.factor
                 if(symbol.isConstant()) {
-                    return core.Math2.factor(symbol);
+                    if (symbol.isInteger()) {
+                        return core.Math2.factor(symbol);
+                    } else {
+                        // return symbol;
+                    }
                 }
 
                 var _symbol = _.parse(symbol);
 
+                // functions may have been evaluated in parse()
                 // STILL don't try to factor constants
+                // do it with Math2.factor
                 if(_symbol.isConstant()) {
-                    return core.Math2.factor(_symbol);
+                    if (_symbol.isInteger()) {
+                        return core.Math2.factor(_symbol);
+                    } else {
+                        return symbol;
+                    }
                 }
 
-                
+                // shortcut 0 and 1
+                if(_symbol.equals(0) || _symbol.equals(1)) {
+                    return _symbol;
+                }
+
                 var retval = __.Factor._factor(_symbol, factors);
                 if(retval.equals(symbol)) {
                     return retval;
                 }
 
-                // shortcut 0 and 1 after factor (which does eval)
+                // shortcut 0 and 1 AGAIN after factor (which does eval)
                 if(retval.equals(0) || retval.equals(1)) {
                     return retval;
                 }
-                
+
                 if(retval.group === CB) {
                     var t = new Symbol(1);
                     var p = _.parse(retval.power);
