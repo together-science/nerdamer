@@ -8,7 +8,6 @@ require('../Calculus.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
-        expect(nerdamer("simplify(sqrt((sin(1/6)+1)^2+3*cos(1/6)^2))").toString()).toEqual('');
     });
 
     it('should perform gcd operations correctly', function () {
@@ -295,11 +294,12 @@ describe('Algebra', function () {
         expect(nerdamer('simplify(0.5sqrt(4a+4y))').toString()).toEqual('sqrt(a+y)');
         expect(nerdamer('simplify((1/2)*sqrt(-4*y+36))').toString() ).toEqual('sqrt(-y+9)');
         expect(nerdamer('simplify(sqrt(x)^(-1))').toString()).toEqual('sqrt(x)^(-1)');
-        // also test the non-string API
-        expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x)');
         expect(nerdamer("simplify(cos(122925461/78256779))").toString()).toEqual('0');
         expect(nerdamer("simplify(cos(pi/2))").toString()).toEqual('0');
         expect(nerdamer('simplify(sin(2)+1)').toString()).toEqual('180783971/94686123');
+        expect(nerdamer("simplify(sqrt((sin(1/6)+1)^2+3*cos(1/6)^2))").toString()).toEqual('sqrt(1+2*sin(1/6)+sin(1/6)^2+3*cos(1/6)^2)');
+        // also test the non-string API
+        expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x)');
     });
     it('should also simplify squareroots', function() {
         expect(nerdamer('baseunit_m*sqrt(1/baseunit_m^2)').toString()).toEqual('1');

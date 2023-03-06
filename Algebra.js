@@ -3052,7 +3052,8 @@ if((typeof module) !== 'undefined') {
                         }
                         ;
 
-                        if(a.isComposite() && b.power.equals(2)) {
+                        if(a.isComposite() && b.power.equals(2) && 
+                            a.sign() !== b.sign()) {
                             //remove the square from b
                             b = remove_square(b);
                             var f = __.Factor.factorInner(_.add(a, separated.constants));
@@ -3067,7 +3068,9 @@ if((typeof module) !== 'undefined') {
                             a = a.powSimp();
                             b = b.powSimp();
 
-                            if((a.group === S || a.fname === '') && a.power.equals(2) && (b.group === S || b.fname === '') && b.power.equals(2) && !separated.constants) {
+                            if((a.group === S || a.fname === '') && a.power.equals(2) &&
+                                (b.group === S || b.fname === '') && b.power.equals(2) &&
+                                !separated.constants) {
                                 if(a.multiplier.lessThan(0)) {
                                     var t = b;
                                     b = a;
