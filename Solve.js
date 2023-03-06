@@ -255,7 +255,7 @@ if((typeof module) !== 'undefined') {
         }
 
         return solve(symbol, x).map(function (x) {
-            return new core.Expression(x);
+            return new core.Expression(x.simplify());
         });
     };
 
