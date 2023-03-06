@@ -2282,6 +2282,11 @@ if((typeof module) !== 'undefined') {
                     return retval;
                 }
 
+                // shortcut 0 and 1 after factor (which does eval)
+                if(retval.equals(0) || retval.equals(1)) {
+                    return retval;
+                }
+                
                 if(retval.group === CB) {
                     var t = new Symbol(1);
                     var p = _.parse(retval.power);
@@ -2303,6 +2308,7 @@ if((typeof module) !== 'undefined') {
                         // Related to #566. Since the symbol's group may not have been properly
                         // updated, it's easier to just parse the symbol and have the parser 
                         // do the update for us.
+                        
                         var factored = _.parse(__.Factor._factor(x));
                         m = _.multiply(m, Symbol.create(factored.multiplier));
                         factored.toUnitMultiplier();
@@ -2492,7 +2498,7 @@ if((typeof module) !== 'undefined') {
                     }
 
                     if(symbol.isConstant()) {
-                        if(symbol.equals(1))
+                        if(symbol.equals(1) || symbol.equals(0))
                             return symbol.clone();
                         var ret = core.Math2.factor(symbol);
                         return ret;
