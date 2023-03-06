@@ -6,6 +6,8 @@ var nerdamer = require('../nerdamer.core.js');
 require('../Solve');
 
 describe('Solve', function () {
+    it('debug problem of the day', function () {
+    });
     it('should solve correctly', function () {
         expect(nerdamer('solve(x=y/3416.3333333333344, y)').toString()).toEqual('[(1073228064103962/314146179365)*x]');
         expect(nerdamer('solve(x, x)').toString()).toEqual('[0]');
@@ -74,6 +76,8 @@ describe('Solve', function () {
         expect(nerdamer('solve(y=exp(4x),x)').toString() ).toEqual('[(1/4)*log(y)]');
         expect(nerdamer('solve(x*y+y=0,x)').toString() ).toEqual('[-1]');
         expect(nerdamer('(y+((x)^(2)))=9').solveFor('x').toString() ).toEqual('sqrt(-y+9),-sqrt(-y+9)');
+        expect(nerdamer('solve(c*((((((4*x)+1))*d))/(5))*f=((a)/(b)), x)').toString()).toEqual('[(-5/4)*((1/5)*b*c*d*f-a)*(b*c*d*f)^(-1)]');
+        expect(nerdamer('c*((((((4*x)+1))*d))/(5))*f=((a)/(b))').solveFor('x').toString()).toEqual('(1/4)*(-b*c*d*f+5*a)*(b*c*d*f)^(-1)');
     });
     it('should solve system of equations correctly', function () {
         expect(nerdamer.solveEquations(['x+y=1', '2*x=6', '4*z+y=6']).toString()).toEqual('x,3,y,-2,z,2');

@@ -2329,13 +2329,17 @@ if((typeof module) !== 'undefined') {
                         factored.toUnitMultiplier();
 
                         if(factored.group === CB) {
+                            let _t = new Symbol(1);
                             factored.each(function (y) {
                                 var _factored = _.parse(__.Factor._factor(y));
-                                t = _.multiply(t, _factored);
                                 if(_factored.group === CB) {
                                     m = _.multiply(m, Symbol.create(_factored.multiplier));
+                                    _factored.toUnitMultiplier();
                                 }
+                                _t = _.multiply(_t, _factored);
                             });
+                            _t = _.pow(_t, new Symbol(factored.power));
+                            t = _.multiply(t, _t);
                         }
                         else {
                             t = _.multiply(t, factored);
@@ -2343,7 +2347,7 @@ if((typeof module) !== 'undefined') {
                     });
 
                     //put back the multiplier and power
-                    retval = _.pow(_.multiply(m, t), p);
+                    retval = _.multiply(m, _.pow(t, p));
                 }
                 return retval;
             },

@@ -8,7 +8,9 @@ require('../Calculus.js');
 
 describe('Algebra', function () {
     it('debug problem of the day', function () {
+        expect(nerdamer("simplify(sqrt((sin(1/6)+1)^2+3*cos(1/6)^2))").toString()).toEqual('');
     });
+
     it('should perform gcd operations correctly', function () {
         expect(nerdamer('gcd(5*x^6+5*x^5+27*x^4+27*x^3+28*x^2+28*x, 5*x^3+7*x)').toString()).toEqual('5*x^3+7*x');
         expect(nerdamer('gcd(-20+16*i,-10+8*i)').toString()).toEqual('-10+8*i');
@@ -204,6 +206,7 @@ describe('Algebra', function () {
         expect(nerdamer('factor(35a*b-15b+(49a^2-42a+9))').toString()).toEqual('(-3+5*b+7*a)*(-3+7*a)');
         expect(nerdamer('factor(1-6a^2+9a^4)').toString()).toEqual('(-1+3*a^2)^2');
         expect(nerdamer('factor(1-6a^2+9a^4-49b^2)').toString()).toEqual('(-1+3*a^2+7*b)*(-1-7*b+3*a^2)');
+        expect(nerdamer("factor((-b*c+5*a)*(b*c)^(-1))").toString()).toEqual('(-b*c+5*a)*(b*c)^(-1)');
     });
     it('should not have any regression to factor', function() {
         //this test will absolutely break as factor improves enough to factor this expression. For now it just serves as a safeguard
