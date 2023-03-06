@@ -4615,26 +4615,17 @@ if((typeof module) !== 'undefined') {
                     });
                     simplified = r;
                     //put back the multiplier
-                    simplified.multiplier = m;
+                    simplified = _.multiply(simplified, new Symbol(m));
                     if (simplified.multiplier.equals(-1)) {
                         simplified.distributeMultiplier();
                     }
-                } 
+                }  
 
-                //place back multiplier and return
-                var retval = __.Simplify.unstrip(sym_array, simplified);
-
-                // Back substitute
-                /*
-                 for(var x in patterns) {
-                 retval = retval.sub(patterns[x], x);
-                 }
-                 */
-
-                // retval.pushMinus();
-
-                // console.log("final result: "+retval.text());
-                return retval;
+                //place back original multiplier and return
+                simplified = __.Simplify.unstrip(sym_array, simplified);
+                
+                // console.log("final result: "+simplified.text());
+                return simplified;
             }
         },
 
