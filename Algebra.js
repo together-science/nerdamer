@@ -4411,7 +4411,8 @@ if((typeof module) !== 'undefined') {
                         let mOuter = symbol.multiplier.clone();
 
                         // now factor it
-                        let factored = __.Factor.factorInner(symbol.args[0].clone());
+                        let sqrtArg = symbol.args[0].clone();
+                        let factored = __.Factor.factorInner(sqrtArg);
 
                         // get a sanitized version of the argument's multiplier
                         let m = _.parse(factored.multiplier);
@@ -4427,6 +4428,7 @@ if((typeof module) !== 'undefined') {
                             var rem = new Symbol(1);
 
                             factored.each(function (x) {
+                                x = _.parse(x);
                                 if(x.group === N) {
                                     var trial = _.sqrt(x.clone());
 

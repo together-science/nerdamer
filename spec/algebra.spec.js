@@ -300,6 +300,8 @@ describe('Algebra', function () {
         expect(nerdamer("simplify(sqrt((sin(1/6)+1)^2+3*cos(1/6)^2))").toString()).toEqual('sqrt(1+2*sin(1/6)+sin(1/6)^2+3*cos(1/6)^2)');
         // also test the non-string API
         expect(nerdamer('1+sin(x)+1').simplify().toString()).toEqual('2+sin(x)');
+        expect(nerdamer("sqrt(55225+64)").simplify().evaluate().text()).toEqual('235.136130783850405119');
+        expect(nerdamer("(1/5)*sqrt(55225*sin(0)^2+55225*cos(0)^2+64)").simplify().evaluate().text()).toEqual('47.027226156770083846');
     });
     it('should also simplify squareroots', function() {
         expect(nerdamer('baseunit_m*sqrt(1/baseunit_m^2)').toString()).toEqual('1');
